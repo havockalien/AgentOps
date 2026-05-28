@@ -101,6 +101,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub Registry
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -112,7 +113,7 @@ jobs:
         with:
           context: .
           file: infra/docker/ui.Dockerfile
-          push: true
+          push: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
           tags: agentops/ui:latest
 
       # Compile and push FastAPI Gateway API service
@@ -121,7 +122,7 @@ jobs:
         with:
           context: .
           file: infra/docker/api-gateway.Dockerfile
-          push: true
+          push: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
           tags: agentops/api-gateway:latest
 
       # Compile and push asynchronous Python Engine service
@@ -130,5 +131,5 @@ jobs:
         with:
           context: .
           file: infra/docker/agent-runtime.Dockerfile
-          push: true
+          push: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
           tags: agentops/agent-runtime:latest
