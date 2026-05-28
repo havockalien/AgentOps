@@ -7,8 +7,6 @@ import {
   Play, 
   Terminal, 
   Layers, 
-  Compass, 
-  Key, 
   Server,
   Code2,
   CheckCircle2,
