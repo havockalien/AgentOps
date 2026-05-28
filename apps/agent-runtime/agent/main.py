@@ -15,7 +15,9 @@ load_dotenv()
 
 # Startup verification of essential environments
 if not os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY"):
-    critical_error_msg = "FATAL: Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is defined. Runtime core aborted."
+    critical_error_msg = (
+        "FATAL: Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is defined. Runtime core aborted."
+    )
     logger.critical(critical_error_msg)
     raise ValueError(critical_error_msg)
 
