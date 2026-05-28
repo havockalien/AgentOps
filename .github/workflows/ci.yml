@@ -91,6 +91,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: integration-tests
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - name: Checkout monorepo code
         uses: actions/checkout@v4
@@ -102,11 +105,11 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub Registry
-        if: secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != ''
+        if: env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != ''
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
 
       # Compile and push core front-end UI service
       - name: Build and push Frontend Container
@@ -114,7 +117,7 @@ jobs:
         with:
           context: .
           file: infra/docker/ui.Dockerfile
-          push: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          push: ${{ env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != '' }}
           tags: agentops/ui:latest
 
       # Compile and push FastAPI Gateway API service
@@ -123,7 +126,7 @@ jobs:
         with:
           context: .
           file: infra/docker/api-gateway.Dockerfile
-          push: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          push: ${{ env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != '' }}
           tags: agentops/api-gateway:latest
 
       # Compile and push asynchronous Python Engine service
@@ -132,5 +135,5 @@ jobs:
         with:
           context: .
           file: infra/docker/agent-runtime.Dockerfile
-          push: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          push: ${{ env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != '' }}
           tags: agentops/agent-runtime:latest
