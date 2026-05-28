@@ -74,6 +74,16 @@ jobs:
           pip install httpx
           python -m unittest discover -s tests -p "*_test.py"
 
+      - name: Install dependencies and execute FastAPI Gateway Pytest Suite
+        run: |
+          cd apps/api-gateway
+          python -m pip install --upgrade pip
+          pip install "python-jose[cryptography]" "passlib[bcrypt]" fastapi uvicorn \
+            pydantic pydantic-settings sqlalchemy aiosqlite httpx pytest \
+            pytest-asyncio pytest-cov fakeredis anyio opentelemetry-api \
+            opentelemetry-sdk opentelemetry-instrumentation-fastapi orjson
+          python -m pytest tests/ --ignore=tests/test_generated_tools.py -v
+
   # --- STAGE 3: CONTAINERIZATION BUILD & DOCKER HUB DEPLOYS ---
   docker-compilation:
     name: Multi-stage Container Compilation
