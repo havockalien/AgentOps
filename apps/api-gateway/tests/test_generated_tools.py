@@ -37,6 +37,7 @@ class TestToolsRouter:
         """
         # Remove the dependency override to test real auth
         from app.middleware.auth import get_current_user
+
         if get_current_user in app.dependency_overrides:
             del app.dependency_overrides[get_current_user]
 
@@ -56,12 +57,15 @@ class TestToolsRouter:
         assert data is not None
         assert data["name"] == "get-tool-test"
 
-    async def test_get_tool_unauthorized(self, anon_client: AsyncClient, app: FastAPI, db_session: AsyncSession):
+    async def test_get_tool_unauthorized(
+        self, anon_client: AsyncClient, app: FastAPI, db_session: AsyncSession
+    ):
         """
         Unauthenticated block ensuring API token compliance
         """
         # Remove the dependency override to test real auth
         from app.middleware.auth import get_current_user
+
         if get_current_user in app.dependency_overrides:
             del app.dependency_overrides[get_current_user]
 
@@ -84,12 +88,15 @@ class TestToolsRouter:
         assert data["success"] is True
         assert data["tool_name"] == "invoke-tool-test"
 
-    async def test_invoke_tool_unauthorized(self, anon_client: AsyncClient, app: FastAPI, db_session: AsyncSession):
+    async def test_invoke_tool_unauthorized(
+        self, anon_client: AsyncClient, app: FastAPI, db_session: AsyncSession
+    ):
         """
         Unauthenticated block ensuring API token compliance
         """
         # Remove the dependency override to test real auth
         from app.middleware.auth import get_current_user
+
         if get_current_user in app.dependency_overrides:
             del app.dependency_overrides[get_current_user]
 
