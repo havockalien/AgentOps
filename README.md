@@ -1,6 +1,6 @@
 # 🤖 AgentOps — Enterprise AI Orchestration Operating System
 
-[![CI Pipeline](https://github.com/YOUR_USERNAME/AgentOps/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/AgentOps/actions/workflows/ci.yml)
+[![CI Pipeline](https://github.com/madebyayush/AgentOps/actions/workflows/ci.yml/badge.svg)](https://github.com/madebyayush/AgentOps/actions/workflows/ci.yml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org)
 [![Database](https://img.shields.io/badge/PostgreSql-4169e1?style=flat&logo=postgresql)](https://www.postgresql.org)
