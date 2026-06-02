@@ -37,7 +37,9 @@ class WebSearchTool(BaseTool):
         "required": ["query"],
     }
 
-    async def _execute(self, query: str, num_results: int = 5) -> dict[str, Any]:
+    async def _execute(self, **kwargs: Any) -> dict[str, Any]:
+        query: str = kwargs["query"]
+        num_results: int = int(kwargs.get("num_results", 5))
         serpapi_key = os.getenv("SERPAPI_KEY")
 
         if not serpapi_key:

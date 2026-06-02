@@ -53,9 +53,10 @@ class FileReaderTool(BaseTool):
             raise PermissionError(f"Path '{relative}' is outside the workspace.")
         return resolved
 
-    async def _execute(
-        self, action: str, path: str, content: Optional[str] = None
-    ) -> dict[str, Any]:
+    async def _execute(self, **kwargs: Any) -> dict[str, Any]:
+        action: str = kwargs["action"]
+        path: str = kwargs["path"]
+        content: Optional[str] = kwargs.get("content")
         safe = self._safe_path(path)
 
         if action == "read":

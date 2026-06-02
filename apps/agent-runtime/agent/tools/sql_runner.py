@@ -62,7 +62,9 @@ class SqlRunnerTool(BaseTool):
         if not upper.startswith("SELECT"):
             raise ValueError("Only SELECT statements are permitted.")
 
-    async def _execute(self, query: str, limit: int = 50) -> dict[str, Any]:
+    async def _execute(self, **kwargs: Any) -> dict[str, Any]:
+        query: str = kwargs["query"]
+        limit: int = int(kwargs.get("limit", 50))
         self._validate_query(query)
         db_url = os.getenv("POSTGRES_URL", "")
 

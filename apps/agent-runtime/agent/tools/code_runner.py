@@ -70,8 +70,9 @@ class CodeRunnerTool(BaseTool):
         "required": ["code"],
     }
 
-    async def _execute(self, code: str, timeout: int = 5) -> dict[str, Any]:
-        timeout = min(timeout, MAX_EXEC_SECONDS)
+    async def _execute(self, **kwargs: Any) -> dict[str, Any]:
+        code: str = kwargs["code"]
+        timeout: int = min(int(kwargs.get("timeout", 5)), MAX_EXEC_SECONDS)
         clean_code = textwrap.dedent(code)
 
         # Write to a temp file and run in subprocess for isolation

@@ -49,19 +49,20 @@ async def _call_llm(prompt: str, system: str = "") -> str:
     if openai_key:
         try:
             from openai import AsyncOpenAI
+            from openai.types.chat import ChatCompletionMessageParam
 
-            client = AsyncOpenAI(api_key=openai_key)
-            messages = []
+            openai_client = AsyncOpenAI(api_key=openai_key)
+            messages: list[ChatCompletionMessageParam] = []
             if system:
                 messages.append({"role": "system", "content": system})
             messages.append({"role": "user", "content": prompt})
-            resp = await client.chat.completions.create(
+            oai_resp = await openai_client.chat.completions.create(
                 model="gpt-4o",
                 messages=messages,
                 temperature=0.2,
                 max_tokens=2048,
             )
-            return resp.choices[0].message.content or ""
+            return oai_resp.choices[0].message.content or ""
         except Exception as exc:
             log.warning("OpenAI call failed, trying Anthropic: %s", exc)
 
@@ -69,14 +70,14 @@ async def _call_llm(prompt: str, system: str = "") -> str:
         try:
             import anthropic
 
-            client = anthropic.AsyncAnthropic(api_key=anthropic_key)
-            resp = await client.messages.create(
+            anthropic_client = anthropic.AsyncAnthropic(api_key=anthropic_key)
+            ant_resp = await anthropic_client.messages.create(
                 model="claude-sonnet-4-5",
                 max_tokens=2048,
                 system=system or "You are a helpful AI assistant.",
                 messages=[{"role": "user", "content": prompt}],
             )
-            return resp.content[0].text
+            return ant_resp.content[0].text  # type: ignore[union-attr]
         except Exception as exc:
             log.error("Anthropic call also failed: %s", exc)
 
