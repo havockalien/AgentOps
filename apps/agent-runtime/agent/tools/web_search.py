@@ -51,7 +51,11 @@ class WebSearchTool(BaseTool):
                     "3. Result 3: OpenAI API reference — platform.openai.com"
                 ),
                 "results": [
-                    {"title": f"Stub result {i}", "url": f"https://example.com/{i}", "snippet": f"Result {i} for {query}"}
+                    {
+                        "title": f"Stub result {i}",
+                        "url": f"https://example.com/{i}",
+                        "snippet": f"Result {i} for {query}",
+                    }
                     for i in range(1, min(num_results, 3) + 1)
                 ],
                 "stub": True,

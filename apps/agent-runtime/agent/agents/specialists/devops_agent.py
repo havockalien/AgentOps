@@ -81,7 +81,11 @@ class DevOpsAgent(BaseAgent):
         else:
             rec = "continue"
         return Reflection(
-            passed=passed, tool_success=passed, schema_valid=True,
-            logic_sound=passed, recommendation=rec, retry_count=retry_count,
+            passed=passed,
+            tool_success=passed,
+            schema_valid=True,
+            logic_sound=passed,
+            recommendation=rec,
+            retry_count=retry_count,
             rationale=f"{rec.upper()}: {'Success' if passed else result.error or 'Failed'}",
         )

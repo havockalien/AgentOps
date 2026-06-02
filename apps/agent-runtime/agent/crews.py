@@ -20,6 +20,7 @@ def _try_import_crewai() -> tuple[Any, Any, Any]:
     """Attempt to import CrewAI; return stubs if not installed."""
     try:
         from crewai import Agent, Crew, Task
+
         return Agent, Crew, Task
     except ImportError:
         log.warning("crewai not installed — crew features will be unavailable.")

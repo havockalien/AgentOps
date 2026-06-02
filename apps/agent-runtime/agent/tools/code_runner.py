@@ -22,9 +22,31 @@ MAX_EXEC_SECONDS = 10
 MAX_OUTPUT_CHARS = 4000
 
 _SAFE_BUILTINS = [
-    "print", "len", "range", "int", "float", "str", "list", "dict", "set",
-    "tuple", "bool", "sum", "min", "max", "abs", "round", "sorted", "enumerate",
-    "zip", "map", "filter", "isinstance", "type", "repr", "format",
+    "print",
+    "len",
+    "range",
+    "int",
+    "float",
+    "str",
+    "list",
+    "dict",
+    "set",
+    "tuple",
+    "bool",
+    "sum",
+    "min",
+    "max",
+    "abs",
+    "round",
+    "sorted",
+    "enumerate",
+    "zip",
+    "map",
+    "filter",
+    "isinstance",
+    "type",
+    "repr",
+    "format",
 ]
 
 
@@ -54,22 +76,20 @@ class CodeRunnerTool(BaseTool):
 
         # Write to a temp file and run in subprocess for isolation
         import tempfile
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".py", delete=False
-        ) as tmp:
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
             tmp.write(clean_code)
             tmp_path = tmp.name
 
         try:
             proc = await asyncio.create_subprocess_exec(
-                sys.executable, tmp_path,
+                sys.executable,
+                tmp_path,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )
             try:
-                stdout, stderr = await asyncio.wait_for(
-                    proc.communicate(), timeout=timeout
-                )
+                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
             except asyncio.TimeoutError:
                 proc.kill()
                 return {

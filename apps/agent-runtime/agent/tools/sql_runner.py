@@ -16,8 +16,17 @@ from agent.tools.base_tool import BaseTool, get_registry
 log = logging.getLogger("agentops.tools.sql_runner")
 
 _BLOCKED_KEYWORDS = {
-    "INSERT", "UPDATE", "DELETE", "DROP", "CREATE", "ALTER",
-    "TRUNCATE", "EXEC", "EXECUTE", "GRANT", "REVOKE",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "DROP",
+    "CREATE",
+    "ALTER",
+    "TRUNCATE",
+    "EXEC",
+    "EXECUTE",
+    "GRANT",
+    "REVOKE",
 }
 
 
@@ -47,7 +56,9 @@ class SqlRunnerTool(BaseTool):
         upper = query.strip().upper()
         for kw in _BLOCKED_KEYWORDS:
             if kw in upper.split():
-                raise ValueError(f"SQL keyword '{kw}' is not allowed. Only SELECT queries permitted.")
+                raise ValueError(
+                    f"SQL keyword '{kw}' is not allowed. Only SELECT queries permitted."
+                )
         if not upper.startswith("SELECT"):
             raise ValueError("Only SELECT statements are permitted.")
 
@@ -67,6 +78,7 @@ class SqlRunnerTool(BaseTool):
 
         try:
             import asyncpg
+
             conn = await asyncpg.connect(db_url)
             try:
                 rows = await conn.fetch(f"{query} LIMIT {limit}")

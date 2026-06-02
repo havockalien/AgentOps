@@ -49,6 +49,7 @@ async def _call_llm(prompt: str, system: str = "") -> str:
     if openai_key:
         try:
             from openai import AsyncOpenAI
+
             client = AsyncOpenAI(api_key=openai_key)
             messages = []
             if system:
@@ -67,6 +68,7 @@ async def _call_llm(prompt: str, system: str = "") -> str:
     if anthropic_key:
         try:
             import anthropic
+
             client = anthropic.AsyncAnthropic(api_key=anthropic_key)
             resp = await client.messages.create(
                 model="claude-sonnet-4-5",
@@ -80,10 +82,12 @@ async def _call_llm(prompt: str, system: str = "") -> str:
 
     # Stub fallback for environments with no LLM keys
     log.warning("No LLM API keys found — using stub response.")
-    return json.dumps({
-        "steps": ["Analyse the task", "Execute solution", "Verify output"],
-        "rationale": "Stub plan generated (no LLM key available).",
-    })
+    return json.dumps(
+        {
+            "steps": ["Analyse the task", "Execute solution", "Verify output"],
+            "rationale": "Stub plan generated (no LLM key available).",
+        }
+    )
 
 
 def _now_iso() -> str:
@@ -151,11 +155,15 @@ async def tool_executor_node(state: "AgentState") -> dict[str, Any]:
     step = plan[current_step]
     log.info(
         "[node:tool_executor] run=%s step=%d/%d: %s",
-        state["run_id"], current_step + 1, len(plan), step[:60]
+        state["run_id"],
+        current_step + 1,
+        len(plan),
+        step[:60],
     )
 
     # Determine tool via LLM
     from agent.tools.base_tool import get_registry
+
     registry = get_registry()
     tool_names = registry.names()
 
@@ -252,7 +260,9 @@ async def reflection_node(state: "AgentState") -> dict[str, Any]:
     # Check 3: logic check via LLM
     plan = state.get("plan", [])
     current_step_idx = state.get("current_step", 0)
-    current_step_text = plan[current_step_idx] if plan and current_step_idx < len(plan) else "unknown"
+    current_step_text = (
+        plan[current_step_idx] if plan and current_step_idx < len(plan) else "unknown"
+    )
 
     logic_prompt = (
         f"Task: {state['task']}\n"
@@ -291,7 +301,9 @@ async def reflection_node(state: "AgentState") -> dict[str, Any]:
     rationale = f"{recommendation.upper()}: {'; '.join(issues) or 'All checks passed.'}"
     log.info(
         "[node:reflection] run=%s recommendation=%s retry=%d",
-        state["run_id"], recommendation, retry_count
+        state["run_id"],
+        recommendation,
+        retry_count,
     )
 
     return {
@@ -372,6 +384,7 @@ async def output_node(state: "AgentState") -> dict[str, Any]:
 
 
 # ── Helper: advance_step (exposed for graph.py import) ───────────────────────
+
 
 def _advance_step(state: "AgentState") -> dict[str, Any]:
     """Increment current_step before re-entering tool_executor."""

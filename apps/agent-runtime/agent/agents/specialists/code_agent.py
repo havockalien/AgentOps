@@ -40,7 +40,10 @@ class CodeAgent(BaseAgent):
             parsed = json.loads(raw)
             return Plan(steps=parsed.get("steps", [task]), rationale=parsed.get("rationale", ""))
         except json.JSONDecodeError:
-            return Plan(steps=[f"Write code for: {task}", "Test the solution"], rationale="Standard coding flow.")
+            return Plan(
+                steps=[f"Write code for: {task}", "Test the solution"],
+                rationale="Standard coding flow.",
+            )
 
     async def act(self, plan: Plan, state: AgentState) -> ActionResult:
         step = plan.steps[state.get("current_step", 0)]
@@ -75,9 +78,17 @@ class CodeAgent(BaseAgent):
 
     async def reflect(self, result: ActionResult, state: AgentState) -> Reflection:
         passed = result.success
-        rec = "continue" if passed else ("retry" if state.get("retry_count", 0) < 3 else "escalate_hitl")
+        rec = (
+            "continue"
+            if passed
+            else ("retry" if state.get("retry_count", 0) < 3 else "escalate_hitl")
+        )
         return Reflection(
-            passed=passed, tool_success=passed, schema_valid=True,
-            logic_sound=passed, recommendation=rec, retry_count=state.get("retry_count", 0),
+            passed=passed,
+            tool_success=passed,
+            schema_valid=True,
+            logic_sound=passed,
+            recommendation=rec,
+            retry_count=state.get("retry_count", 0),
             rationale=f"{rec.upper()}: {'Code executed successfully.' if passed else result.error or 'Execution failed.'}",
         )

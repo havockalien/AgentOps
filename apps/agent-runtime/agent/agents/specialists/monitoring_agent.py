@@ -40,13 +40,16 @@ class MonitoringAgent(BaseAgent):
             return resp.json()
 
     async def think(self, task: str, state: AgentState) -> Plan:
-        system = f"{self.build_system_prompt()}\nJSON: {{\"steps\": [...], \"rationale\": \"...\"}}"
+        system = f'{self.build_system_prompt()}\nJSON: {{"steps": [...], "rationale": "..."}}'
         raw = await _call_llm(task, system)
         try:
             parsed = json.loads(raw)
             return Plan(steps=parsed.get("steps", [task]), rationale=parsed.get("rationale", ""))
         except json.JSONDecodeError:
-            return Plan(steps=[f"Query metrics for: {task}", "Analyse results"], rationale="Standard monitoring flow.")
+            return Plan(
+                steps=[f"Query metrics for: {task}", "Analyse results"],
+                rationale="Standard monitoring flow.",
+            )
 
     async def act(self, plan: Plan, state: AgentState) -> ActionResult:
         step = plan.steps[state.get("current_step", 0)]
@@ -62,7 +65,8 @@ class MonitoringAgent(BaseAgent):
             "timestamp": str(time.time()),
         }
         return ActionResult(
-            success=True, output=output,
+            success=True,
+            output=output,
             tool_calls_made=[record],
             duration_ms=(time.perf_counter() - start) * 1000,
             step_index=state.get("current_step", 0),
@@ -70,7 +74,11 @@ class MonitoringAgent(BaseAgent):
 
     async def reflect(self, result: ActionResult, state: AgentState) -> Reflection:
         return Reflection(
-            passed=True, tool_success=True, schema_valid=True, logic_sound=True,
-            recommendation="continue", retry_count=state.get("retry_count", 0),
+            passed=True,
+            tool_success=True,
+            schema_valid=True,
+            logic_sound=True,
+            recommendation="continue",
+            retry_count=state.get("retry_count", 0),
             rationale="CONTINUE: Monitoring data retrieved.",
         )

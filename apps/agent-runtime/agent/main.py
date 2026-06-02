@@ -34,9 +34,7 @@ load_dotenv()
 
 # ── Environment validation ────────────────────────────────────────────────────
 if not os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY"):
-    logger.critical(
-        "FATAL: Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is set. Runtime aborted."
-    )
+    logger.critical("FATAL: Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is set. Runtime aborted.")
     raise ValueError("At least one LLM API key is required.")
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
@@ -67,14 +65,14 @@ class AgentRuntimeEngine:
     async def _init_redis(self) -> None:
         """Establish async Redis connection."""
         import redis.asyncio as aioredis
-        self._redis = await aioredis.from_url(
-            REDIS_URL, encoding="utf-8", decode_responses=True
-        )
+
+        self._redis = await aioredis.from_url(REDIS_URL, encoding="utf-8", decode_responses=True)
         logger.info("Redis connection established: %s", REDIS_URL)
 
     async def _init_graph(self) -> None:
         """Build and compile the LangGraph workflow."""
         from agent.graph import build_workflow_graph, get_checkpointer
+
         checkpointer = get_checkpointer()
         self._graph = build_workflow_graph(checkpointer)
         logger.info("LangGraph workflow compiled and ready.")
@@ -93,6 +91,7 @@ class AgentRuntimeEngine:
 
         # Build initial AgentState
         from agent.state import AgentState
+
         initial_state: AgentState = {
             "run_id": run_id,
             "agent_name": agent_name,
@@ -129,11 +128,13 @@ class AgentRuntimeEngine:
             await self._redis.set(f"{RUN_STATUS_PREFIX}{run_id}", status, ex=3600)
             await self._redis.publish(
                 "agentops.run.completed",
-                json.dumps({
-                    "run_id": run_id,
-                    "status": status,
-                    "output": output[:500],
-                }),
+                json.dumps(
+                    {
+                        "run_id": run_id,
+                        "status": status,
+                        "output": output[:500],
+                    }
+                ),
             )
 
         logger.info("Run completed: run_id=%s status=%s", run_id, status)
@@ -149,9 +150,7 @@ class AgentRuntimeEngine:
         await self._init_redis()
         await self._init_graph()
 
-        logger.info(
-            "AgentOps engine started. Listening on channel: %s", RUN_QUEUED_CHANNEL
-        )
+        logger.info("AgentOps engine started. Listening on channel: %s", RUN_QUEUED_CHANNEL)
 
         if self._redis is None:
             logger.error("Redis not available — cannot subscribe to events.")

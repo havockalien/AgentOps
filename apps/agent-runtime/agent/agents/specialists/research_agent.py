@@ -39,7 +39,10 @@ class ResearchAgent(BaseAgent):
             parsed = json.loads(raw)
             return Plan(steps=parsed.get("steps", [task]), rationale=parsed.get("rationale", ""))
         except json.JSONDecodeError:
-            return Plan(steps=[f"Search for: {task}", "Summarise findings"], rationale="Standard research flow.")
+            return Plan(
+                steps=[f"Search for: {task}", "Summarise findings"],
+                rationale="Standard research flow.",
+            )
 
     async def act(self, plan: Plan, state: AgentState) -> ActionResult:
         step = plan.steps[state.get("current_step", 0)]
@@ -68,9 +71,17 @@ class ResearchAgent(BaseAgent):
 
     async def reflect(self, result: ActionResult, state: AgentState) -> Reflection:
         passed = result.success and bool(result.output.strip())
-        rec = "continue" if passed else ("retry" if state.get("retry_count", 0) < 3 else "escalate_hitl")
+        rec = (
+            "continue"
+            if passed
+            else ("retry" if state.get("retry_count", 0) < 3 else "escalate_hitl")
+        )
         return Reflection(
-            passed=passed, tool_success=result.success, schema_valid=passed,
-            logic_sound=passed, recommendation=rec, retry_count=state.get("retry_count", 0),
+            passed=passed,
+            tool_success=result.success,
+            schema_valid=passed,
+            logic_sound=passed,
+            recommendation=rec,
+            retry_count=state.get("retry_count", 0),
             rationale=f"{rec.upper()}: {'Good results found.' if passed else 'No results.'}",
         )

@@ -17,7 +17,6 @@ from unittest.mock import AsyncMock, patch
 import pytest
 import pytest_asyncio
 
-
 # ── Fake Redis ────────────────────────────────────────────────────────────────────
 
 
@@ -28,9 +27,11 @@ async def fake_redis():
         # fakeredis >= 2.x: FakeRedis() constructor, no .create() needed
         try:
             import fakeredis.aioredis as fakeredis_async
+
             r = fakeredis_async.FakeRedis()
         except (ImportError, AttributeError):
             import fakeredis
+
             r = fakeredis.FakeRedis()
         yield r
         if hasattr(r, "aclose"):
@@ -55,6 +56,7 @@ async def fake_redis():
 
             async def keys(self, pattern):
                 import fnmatch
+
                 return [k for k in self._store if fnmatch.fnmatch(k, pattern)]
 
             async def publish(self, channel, message):
@@ -64,7 +66,6 @@ async def fake_redis():
                 pass
 
         yield SimpleRedisStub()
-
 
 
 # ── Sample state factory ───────────────────────────────────────────────────────
@@ -95,6 +96,7 @@ def sample_state():
 def stub_plan():
     """A minimal Plan for act/reflect testing."""
     from agent.base import Plan
+
     return Plan(
         steps=["Analyse requirements", "Implement solution"],
         rationale="Standard two-step approach.",
@@ -107,9 +109,11 @@ def stub_plan():
 @pytest.fixture
 def mock_llm():
     """Patch agent.nodes._call_llm to return a canned plan JSON."""
-    plan_json = json.dumps({
-        "steps": ["Step 1: analyse task", "Step 2: execute solution"],
-        "rationale": "Standard two-step approach from mock LLM.",
-    })
+    plan_json = json.dumps(
+        {
+            "steps": ["Step 1: analyse task", "Step 2: execute solution"],
+            "rationale": "Standard two-step approach from mock LLM.",
+        }
+    )
     with patch("agent.nodes._call_llm", new_callable=AsyncMock, return_value=plan_json) as m:
         yield m

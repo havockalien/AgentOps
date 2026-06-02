@@ -109,9 +109,7 @@ class BaseAgent(ABC):
         self.memory_namespace = memory_namespace or f"agent:{self.name}"
         self._redis = redis
         self._llm = llm
-        self._memory: Optional[MemoryClient] = (
-            MemoryClient(redis) if redis else None
-        )
+        self._memory: Optional[MemoryClient] = MemoryClient(redis) if redis else None
         log.info(
             "Agent initialised: name=%s tier=%s namespace=%s",
             self.name,
@@ -179,9 +177,7 @@ class BaseAgent(ABC):
             except Exception as exc:
                 log.warning("Failed to publish event to Redis: %s", exc)
 
-    async def get_memory_context(
-        self, query: str, top_k: int = 5
-    ) -> list[str]:
+    async def get_memory_context(self, query: str, top_k: int = 5) -> list[str]:
         """Retrieve relevant memories from the agent's namespace."""
         if self._memory:
             return await self._memory.retrieve(query, self.memory_namespace, top_k)

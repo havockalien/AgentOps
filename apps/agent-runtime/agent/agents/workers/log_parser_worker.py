@@ -17,8 +17,14 @@ from agent.state import AgentState, ToolCallRecord
 log = logging.getLogger("agentops.workers.log_parser")
 
 ERROR_PATTERNS = [
-    r"ERROR", r"CRITICAL", r"FATAL", r"Exception", r"Traceback",
-    r"\[ERROR\]", r"\[CRITICAL\]", r"500",
+    r"ERROR",
+    r"CRITICAL",
+    r"FATAL",
+    r"Exception",
+    r"Traceback",
+    r"\[ERROR\]",
+    r"\[CRITICAL\]",
+    r"500",
 ]
 
 
@@ -31,7 +37,10 @@ class LogParserWorker(BaseAgent):
     tools = ["file_reader"]
 
     async def think(self, task: str, state: AgentState) -> Plan:
-        return Plan(steps=["Parse log content for errors", "Format error report"], rationale="Standard log parsing.")
+        return Plan(
+            steps=["Parse log content for errors", "Format error report"],
+            rationale="Standard log parsing.",
+        )
 
     async def act(self, plan: Plan, state: AgentState) -> ActionResult:
         start = time.perf_counter()
@@ -43,7 +52,8 @@ class LogParserWorker(BaseAgent):
 
         output = (
             f"Found {len(errors)} error(s):\n" + "\n".join(errors[:20])
-            if errors else "No errors found in log content."
+            if errors
+            else "No errors found in log content."
         )
         record: ToolCallRecord = {
             "tool_name": "log_parser",
@@ -54,7 +64,8 @@ class LogParserWorker(BaseAgent):
             "timestamp": str(time.time()),
         }
         return ActionResult(
-            success=True, output=output,
+            success=True,
+            output=output,
             tool_calls_made=[record],
             duration_ms=(time.perf_counter() - start) * 1000,
             step_index=0,
@@ -62,7 +73,11 @@ class LogParserWorker(BaseAgent):
 
     async def reflect(self, result: ActionResult, state: AgentState) -> Reflection:
         return Reflection(
-            passed=True, tool_success=True, schema_valid=True, logic_sound=True,
-            recommendation="continue", retry_count=0,
+            passed=True,
+            tool_success=True,
+            schema_valid=True,
+            logic_sound=True,
+            recommendation="continue",
+            retry_count=0,
             rationale="CONTINUE: Log parsing complete.",
         )

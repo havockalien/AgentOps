@@ -84,5 +84,7 @@ class SlackNotifyWorker(BaseAgent):
             logic_sound=result.success,
             recommendation="continue" if result.success else "retry",
             retry_count=state.get("retry_count", 0),
-            rationale="CONTINUE: Notification sent." if result.success else "RETRY: Notification failed.",
+            rationale=(
+                "CONTINUE: Notification sent." if result.success else "RETRY: Notification failed."
+            ),
         )

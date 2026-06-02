@@ -41,8 +41,7 @@ def build_workflow_graph(checkpointer: Any = None) -> Any:
         from langgraph.graph import StateGraph, START, END
     except ImportError:
         raise ImportError(
-            "langgraph is required for Phase 2. "
-            "Install it with: pip install langgraph"
+            "langgraph is required for Phase 2. " "Install it with: pip install langgraph"
         )
 
     from agent.state import AgentState
@@ -82,11 +81,11 @@ def build_workflow_graph(checkpointer: Any = None) -> Any:
         "reflection",
         reflection_router,
         {
-            "next_step": "advance_step",   # proceed to next plan step
-            "retry": "tool_executor",       # retry same step
-            "hitl": "hitl_checkpoint",      # escalate to human
-            "done": "output",               # all steps complete
-            "abort": "output",              # unrecoverable failure
+            "next_step": "advance_step",  # proceed to next plan step
+            "retry": "tool_executor",  # retry same step
+            "hitl": "hitl_checkpoint",  # escalate to human
+            "done": "output",  # all steps complete
+            "abort": "output",  # unrecoverable failure
         },
     )
 
@@ -115,6 +114,7 @@ def get_checkpointer() -> Any:
     if env == "production" and postgres_url:
         try:
             from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+
             log.info("Using AsyncPostgresSaver checkpointer (production).")
             return AsyncPostgresSaver.from_conn_string(postgres_url)
         except ImportError:
@@ -122,6 +122,7 @@ def get_checkpointer() -> Any:
 
     try:
         from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+
         log.info("Using AsyncSqliteSaver checkpointer (dev).")
         return AsyncSqliteSaver.from_conn_string(":memory:")
     except ImportError:

@@ -59,8 +59,12 @@ class OrchestratorAgent(BaseAgent):
         start = time.perf_counter()
 
         specialist_types = [
-            "devops_agent", "research_agent", "code_agent",
-            "data_agent", "browser_agent", "monitoring_agent"
+            "devops_agent",
+            "research_agent",
+            "code_agent",
+            "data_agent",
+            "browser_agent",
+            "monitoring_agent",
         ]
         system = (
             "You are a master orchestrator. Given a high-level task, "
@@ -70,6 +74,7 @@ class OrchestratorAgent(BaseAgent):
         )
 
         from agent.nodes import _call_llm
+
         raw = await _call_llm(task, system)
         try:
             parsed = json.loads(raw)
@@ -90,7 +95,9 @@ class OrchestratorAgent(BaseAgent):
 
     async def act(self, plan: Plan, state: AgentState) -> ActionResult:
         """Execute the current step — for the orchestrator this means invoking a specialist."""
-        await self.emit_event("agent.act.start", {"step": state.get("current_step")}, run_id=state["run_id"])
+        await self.emit_event(
+            "agent.act.start", {"step": state.get("current_step")}, run_id=state["run_id"]
+        )
         start = time.perf_counter()
 
         current_step = state.get("current_step", 0)
@@ -134,7 +141,9 @@ class OrchestratorAgent(BaseAgent):
 
     async def reflect(self, result: ActionResult, state: AgentState) -> Reflection:
         """Evaluate subtask result and decide on routing."""
-        await self.emit_event("agent.reflect.start", {"success": result.success}, run_id=state["run_id"])
+        await self.emit_event(
+            "agent.reflect.start", {"success": result.success}, run_id=state["run_id"]
+        )
         start = time.perf_counter()
 
         retry_count = state.get("retry_count", 0)

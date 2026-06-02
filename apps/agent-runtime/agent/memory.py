@@ -162,10 +162,7 @@ class MemoryClient:
         matches = await self._vector_store.query(namespace, query_vector, top_k)
 
         if matches:
-            return [
-                m.get("metadata", {}).get("content", json.dumps(m))
-                for m in matches
-            ]
+            return [m.get("metadata", {}).get("content", json.dumps(m)) for m in matches]
 
         # Fallback to episodic
         return await self.list_episodic(namespace, limit=top_k)

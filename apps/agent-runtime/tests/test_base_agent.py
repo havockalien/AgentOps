@@ -11,7 +11,6 @@ import pytest
 from agent.base import ActionResult, BaseAgent, Plan, Reflection
 from agent.state import AgentState
 
-
 # ── Minimal concrete implementation for testing ───────────────────────────────────────
 
 
@@ -112,6 +111,7 @@ class TestBaseAgentReflect:
 
         # MinimalAgent always returns continue; we test the pattern using Orchestrator
         from agent.agents.orchestrator import OrchestratorAgent
+
         orch = OrchestratorAgent()
         reflection = await orch.reflect(result, sample_state)
         assert reflection.recommendation == "retry"
@@ -123,6 +123,7 @@ class TestBaseAgentReflect:
         result = ActionResult(success=False, output="", error="Persistent failure")
 
         from agent.agents.orchestrator import OrchestratorAgent
+
         orch = OrchestratorAgent()
         reflection = await orch.reflect(result, sample_state)
         assert reflection.recommendation == "escalate_hitl"
