@@ -40,7 +40,7 @@ AgentOps/
 
 ## 🚀 Phase 1 Backend Completion
 
-Our Core Backend and Database structures are fully implemented, optimized, and validated:
+Core Backend and Database structures are fully implemented, optimized, and validated:
 
 ### 1. Robust Relational Schema (PostgreSQL via SQLAlchemy 2.0 Async)
 - **`Agent`**: registered models configuration and model hyper-parameters.
@@ -61,7 +61,7 @@ Our Core Backend and Database structures are fully implemented, optimized, and v
 
 ## 🛠️ Developer Velocity & Testing Engine
 
-To maintain high development speed, we've introduced dedicated developer testing tools under `apps/api-gateway`:
+To maintain high development speed, I've introduced dedicated developer testing tools under `apps/api-gateway`:
 
 ### 1. Boilerplate Mocks Library (`tests/boilerplate_mocks.py`)
 Ready-to-use, typed, in-memory mocks representing key enterprise backbones:
@@ -81,7 +81,7 @@ This auto-generates `test_generated_tools.py` under the `tests/` folder checking
 
 ## 🧪 Running the Test Suite
 
-Our pipeline runs completely isolated from live PostgreSQL/Redis backends by leveraging **in-memory SQLite (`aiosqlite`)** and **`fakeredis`** context pools, executing all tests in under 4 seconds.
+Pipeline runs completely isolated from live PostgreSQL/Redis backends by leveraging **in-memory SQLite (`aiosqlite`)** and **`fakeredis`** context pools, executing all tests in under 4 seconds.
 
 ### Quick Start (Local Verification)
 1. Navigate to the API gateway:
