@@ -56,3 +56,91 @@ export interface SemanticMemoryRecord {
     tokenCount: number;
   };
 }
+
+// --- PHASE 2: AGENT COGNITIVE TYPES ---
+
+export type AgentTier = 'ORCHESTRATOR' | 'SPECIALIST' | 'WORKER';
+
+export interface ToolCall {
+  tool_name: string;
+  arguments: Record<string, unknown>;
+  result?: unknown;
+  error?: string;
+  duration_ms?: number;
+  timestamp: string;
+}
+
+export interface Plan {
+  steps: string[];
+  rationale: string;
+  estimated_steps: number;
+}
+
+export interface ActionResult {
+  success: boolean;
+  output: string;
+  tool_calls_made: ToolCall[];
+  duration_ms: number;
+  step_index: number;
+}
+
+export type ReflectionRecommendation =
+  | 'continue'
+  | 'retry'
+  | 'escalate_hitl'
+  | 'abort';
+
+export interface Reflection {
+  passed: boolean;
+  tool_success: boolean;
+  schema_valid: boolean;
+  logic_sound: boolean;
+  issues: string[];
+  recommendation: ReflectionRecommendation;
+  retry_count: number;
+  rationale: string;
+}
+
+export type AgentEventType =
+  | 'agent.think.start'
+  | 'agent.think.complete'
+  | 'agent.act.start'
+  | 'agent.act.complete'
+  | 'agent.reflect.start'
+  | 'agent.reflect.complete'
+  | 'agent.memory.retrieve'
+  | 'agent.memory.store'
+  | 'agent.hitl.requested'
+  | 'agent.run.completed'
+  | 'agent.run.failed';
+
+export interface AgentEvent {
+  event_type: AgentEventType;
+  run_id: string;
+  agent_name: string;
+  agent_tier: AgentTier;
+  timestamp: string;
+  duration_ms?: number;
+  payload: Record<string, unknown>;
+  trace_id?: string;
+  span_id?: string;
+}
+
+export interface SubTask {
+  id: string;
+  parent_run_id: string;
+  specialist_type: string;
+  task_description: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  result?: string;
+  created_at: string;
+}
+
+export interface OrchestratorResult {
+  run_id: string;
+  final_output: string;
+  subtasks_completed: number;
+  subtasks_failed: number;
+  total_duration_ms: number;
+  tool_calls_total: number;
+}

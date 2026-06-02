@@ -85,6 +85,24 @@ jobs:
             opentelemetry-sdk opentelemetry-instrumentation-fastapi orjson
           python -m pytest tests/ --ignore=tests/test_generated_tools.py -v
 
+      - name: Install dependencies and execute Agent Runtime Phase 2 Test Suite
+        env:
+          # Stub keys so the runtime env check passes without real credentials
+          OPENAI_API_KEY: sk-stub-openai-key-for-ci
+        run: |
+          cd apps/agent-runtime
+          python -m pip install --upgrade pip
+          pip install \
+            pydantic python-dotenv redis hiredis httpx \
+            opentelemetry-api opentelemetry-sdk \
+            "langgraph>=0.1.0" "langchain-core>=0.2.0" \
+            "langchain-openai>=0.1.0" "langchain-anthropic>=0.1.0" \
+            "openai>=1.30.0" \
+            "pytest>=8.1.1" "pytest-asyncio>=0.23.6" "pytest-cov>=5.0.0" \
+            "fakeredis[aioredis]>=2.23.0" "anyio[trio]>=4.3.0" \
+            "typing-extensions>=4.10.0"
+          python -m pytest tests/ -v --tb=short --asyncio-mode=auto
+
   # --- STAGE 3: CONTAINERIZATION BUILD & DOCKER HUB DEPLOYS ---
   docker-compilation:
     name: Multi-stage Container Compilation
