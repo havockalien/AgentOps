@@ -62,8 +62,8 @@ tests/test_react_and_edges.py::TestLangGraphEdgeRouting::test_router_escalate_hi
 tests/test_react_and_edges.py::TestLangGraphEdgeRouting::test_router_abort_returns_abort PASSED [ 65%]
 tests/test_react_and_edges.py::TestLangGraphEdgeRouting::test_router_empty_reflection_defaults_to_done PASSED [ 66%]
 tests/test_react_and_edges.py::TestLangGraphEdgeRouting::test_router_empty_plan_routes_to_done PASSED [ 67%]
-tests/test_react_and_edges.py::TestCheckpointRecovery::test_graph_runs_with_sqlite_checkpointer SKIPPED [ 68%]
-tests/test_react_and_edges.py::TestCheckpointRecovery::test_different_thread_ids_are_isolated SKIPPED [ 70%]
+tests/test_react_and_edges.py::TestCheckpointRecovery::test_graph_runs_with_sqlite_checkpointer PASSED [ 68%]
+tests/test_react_and_edges.py::TestCheckpointRecovery::test_different_thread_ids_are_isolated PASSED [ 70%]
 tests/test_react_and_edges.py::TestCheckpointRecovery::test_checkpointer_none_still_runs PASSED [ 71%]
 tests/test_react_and_edges.py::TestCheckpointRecovery::test_get_checkpointer_returns_sqlite_in_dev PASSED [ 72%]
 tests/test_react_and_edges.py::TestFailureHandling::test_tool_executor_handles_missing_tool_gracefully PASSED [ 73%]
@@ -89,4 +89,4 @@ tests/test_tools.py::TestFileReaderTool::test_write_and_read_file PASSED [ 97%]
 tests/test_tools.py::TestSqlRunnerTool::test_stub_response_without_db PASSED [ 98%]
 tests/test_tools.py::TestSqlRunnerTool::test_blocks_dml_statements PASSED [100%]
 
-======================== 78 passed, 2 skipped in 0.76s ========================
+============================= 80 passed in 0.78s ==============================
