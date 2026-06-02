@@ -59,6 +59,29 @@ Core Backend and Database structures are fully implemented, optimized, and valid
 
 ---
 
+## 🧠 Phase 2 Asynchronous Cognitive Runtime Engine (LangGraph Engine)
+
+The core asynchronous cognitive agent execution loop has been fully built, optimized, and tested:
+
+### 1. State-Driven Orchestration (LangGraph & StateGraph)
+- **`AgentState` TypedDict**: Manages thread-safe execution variables (including memory context, plans, current execution step, tool call history, and human-in-the-loop pending approval flags).
+- **Core Abstractions (`BaseAgent`)**: Standardized Agent interface with `think` (planning), `act` (execution), and `reflect` (evaluation) steps, implementing the standard ReAct loop.
+- **Asynchronous Execution Loop (`AgentRuntimeEngine`)**: Handles ingestion of runs from the Redis queue, schedules cognitive execution workflows concurrently, and coordinates pub/sub telemetry notifications.
+
+### 2. Multi-Agent & Tool Sandbox Execution Layers
+- **Sandboxed Tool Runners**: Secure execution environments with safe limits:
+  - `CodeRunnerTool`: Subprocess-based Python sandboxing with CPU/RAM execution limits and 10-second timeouts.
+  - `FileReaderTool`: Path-traversal blocked reader/writer restricted to workspace bounds.
+  - `WebSearchTool`: Dynamic web search queries via SerpAPI adapters.
+  - `SqlRunnerTool`: Read-only Postgres queries with explicit DML/DDL blocklists.
+- **Hierarchical Cognitive Teams**: Structures orchestrators, specialist agents, and micro-workers into multi-agent crews (`ResearchCrew`, `DevOpsCrew`, `FullStackCrew`) with automated multi-perspective debate logic.
+
+### 3. Fault Tolerance & Memory Systems
+- **Two-Tier Memory Client**: Integrates instant episodic retrieval (via Redis) with semantic search (stubbed in dev; Pinecone ready).
+- **Self-Correction & Gated Approvals**: Implements validation against schemas and logical verification. Failsafe routes trigger automatic retries (up to 3 times) before escalating to Human-in-the-loop (HITL) checkpoints.
+
+---
+
 ## 🛠️ Developer Velocity & Testing Engine
 
 To maintain high development speed, I've introduced dedicated developer testing tools under `apps/api-gateway`:
